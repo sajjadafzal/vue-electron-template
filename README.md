@@ -9,7 +9,7 @@ The boilerplate for electron applications using vue.js
 
 ## Overview
 
-`vue-electron` takes advantage of `webpack-4` with `vue-loader`, `electron-builder`, and some of the most used plugins like `vue-router`, `vuex` and so much more to provide an easy to use development and building enviroment.
+`vue-electron` takes advantage of `rollup.js`, `electron-builder`, and some of the most used plugins like `vue-router`, `vuex` and so much more to provide an easy to use development and building enviroment.
 
 ### What does it offer?
 
@@ -18,8 +18,8 @@ The boilerplate for electron applications using vue.js
 - [Bulma-Pro](https://mubaidr.github.io/bulma-pro/), a theme suitable for desktop application based on [Bulma](https://bulma.io/)
 - [Font-awesomse-5](https://fontawesome.com) installed
 - Easily package your electron app using [electron-builder](https://github.com/electron-userland/electron-builder)
-- `DEV` & `BUILD` NPM scripts using [webpack-4](https://github.com/webpack/webpack) and [vue-loader](https://github.com/vuejs/vue-loader) with Hot Module Replacement enabled
-- Process restarting when working in main process
+- `DEV` & `BUILD` NPM scripts using [rollup.js](https://rollupjs.org/guide/en)
+- Process restarting when working in main process & hot reloading for content
 - CSS/JS pre-processor support with [vue-loader](https://github.com/vuejs/vue-loader/)
 - ES7 with [`env`](https://babeljs.io/docs/en/babel-preset-env/) by default
 - ESLint configured
@@ -37,19 +37,19 @@ git clone https://github.com/mubaidr/vue-electron
 cd vue-electron
 
 # Install dependencies
-npm install
+yarn
 
 # Run in `DEV` mode
-npm run dev
+yarn run dev
 
 # Build installer for this app
-npm run build
+yarn run build
 
 # Build directory for this app with executeable
-npm run build:dir
+yarn run build:dir
 
 # Lint all source files using ESLINT
-npm run lint
+yarn run lint
 ```
 
 ### Project structure
