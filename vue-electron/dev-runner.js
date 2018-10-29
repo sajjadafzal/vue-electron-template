@@ -9,11 +9,6 @@ const { spawn } = require('child_process')
 let electronProcess = null
 const manualRestart = false
 
-function startRenderer() {
-  // eslint-disable-next-line
-  return new Promise((resolve, reject) => {})
-}
-
 function electronLog(data) {
   let log = ''
   data = data.toString().split(/\r?\n/)
@@ -21,6 +16,15 @@ function electronLog(data) {
     log += `${line}\n`
   })
   console.info(log)
+}
+
+function startMain() {
+  return new Promise((resolve, reject) => {})
+}
+
+function startRenderer() {
+  // eslint-disable-next-line
+  return new Promise((resolve, reject) => {})
 }
 
 function startElectron() {
@@ -39,10 +43,6 @@ function startElectron() {
   electronProcess.on('close', () => {
     if (!manualRestart) process.exit()
   })
-}
-
-function startMain() {
-  return new Promise((resolve, reject) => {})
 }
 
 function init() {

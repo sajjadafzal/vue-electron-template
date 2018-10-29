@@ -20,7 +20,7 @@ The boilerplate for electron applications using vue.js
 - Easily package your electron app using [electron-builder](https://github.com/electron-userland/electron-builder)
 - `DEV` & `BUILD` NPM scripts using [rollup.js](https://rollupjs.org/guide/en)
 - Process restarting when working in main process & hot reloading for content
-- CSS/JS pre-processor support with [vue-loader](https://github.com/vuejs/vue-loader/)
+- CSS (SASS/SCSS etc)/JS pre-processor support
 - ES7 with [`env`](https://babeljs.io/docs/en/babel-preset-env/) by default
 - ESLint configured
 - Babel configured

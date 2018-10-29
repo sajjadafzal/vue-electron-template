@@ -1,23 +1,20 @@
 import buble from 'rollup-plugin-buble'
-import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
 import minify from 'rollup-plugin-babel-minify'
+import resolve from 'rollup-plugin-node-resolve'
+import sass from 'rollup-plugin-sass'
+import vue from 'rollup-plugin-vue'
 
 const production = !process.env.ROLLUP_WATCH
 
 export default [
   {
-    external: ['jimp'],
     input: 'src/index.js',
     output: {
-      globals: {
-        jimp: 'document', // fake jimp to document to avoid jimp load error
-      },
-      file: 'dist/javascript-barcode-reader.min.js',
+      file: 'src/main/index.js',
       format: 'iife',
-      name: 'javascriptBarcodeReader',
-      sourcemap: true,
-      sourcemapFile: 'dist/javascript-barcode-reader.min.js.map',
+      sourcemap: production,
+      sourcemapFile: 'dist/electron/main.min.js.map',
     },
     plugins: [
       buble(),
@@ -27,41 +24,22 @@ export default [
     ],
   },
   {
-    external: ['jimp'],
     input: 'src/index.js',
     output: {
-      globals: {
-        jimp: 'document', // fake jimp to document to avoid jimp load error
-      },
-      file: 'dist/javascript-barcode-reader.js',
+      file: 'src/renderer/main.js',
       format: 'iife',
-      name: 'javascriptBarcodeReader',
-      sourcemap: true,
-      sourcemapFile: 'dist/javascript-barcode-reader.js.map',
+      sourcemap: production,
+      sourcemapFile: 'dist/electron/renderer.min.js.map',
     },
-    plugins: [buble(), resolve(), commonjs()],
+    plugins: [
+      buble(),
+      commonjs(),
+      sass(),
+      vue(),
+      production && minify({ comments: false }),
+    ],
     watch: {
       clearScreen: false,
     },
-  },
-  {
-    external: ['jimp'],
-    input: 'src/index.js',
-    output: {
-      globals: {
-        jimp: 'document', // fake jimp to document to avoid jimp load error
-      },
-      file: 'docs/javascript-barcode-reader.min.js',
-      format: 'iife',
-      name: 'javascriptBarcodeReader',
-      sourcemap: true,
-      sourcemapFile: 'docs/javascript-barcode-reader.min.js.map',
-    },
-    plugins: [
-      buble(),
-      resolve(),
-      commonjs(),
-      production && minify({ comments: false }),
-    ],
   },
 ]
