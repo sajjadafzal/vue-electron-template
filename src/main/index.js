@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { app, BrowserWindow, ipcMain, Menu, MenuItem } from 'electron'
+const { app, BrowserWindow } = require('electron')
 /* eslint-enable */
 
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = true
@@ -11,13 +11,15 @@ if (process.env.NODE_ENV === 'development') {
   try {
     // eslint-disable-next-line
     require('electron-debug')({
-      showDevTools: true
+      showDevTools: true,
     })
   } catch (err) {
-    console.log('Failed to install `electron-debug`: Please set `NODE_ENV=production` before build to avoid installing debugging packages. ')
+    console.log(
+      'Failed to install `electron-debug`: Please set `NODE_ENV=production` before build to avoid installing debugging packages. ',
+    )
   }
 } else {
-  winURL = `file://${__dirname}/index.html`
+  winURL = `file://${__dirname}/renderer/index.html`
 
   /**
    * Set `__static` path to static files in production
@@ -34,7 +36,9 @@ function installDevTools() {
     require('devtron').install() //eslint-disable-line
     require('vue-devtools').install() //eslint-disable-line
   } catch (err) {
-    console.log('Failed to install `devtron` & `vue-devtools`: Please set `NODE_ENV=production` before build to avoid installing debugging packages. ')
+    console.log(
+      'Failed to install `devtron` & `vue-devtools`: Please set `NODE_ENV=production` before build to avoid installing debugging packages. ',
+    )
   }
 }
 
@@ -51,9 +55,9 @@ function createWindow() {
     backgroundColor: '#fff',
     webPreferences: {
       nodeIntegrationInWorker: true,
-      webSecurity: false
+      webSecurity: false,
     },
-    show: false
+    show: false,
   })
 
   // mainWindow.setMenu(null)
