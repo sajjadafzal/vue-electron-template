@@ -28,7 +28,7 @@ The boilerplate for electron applications using vue.js
 
 ### Getting Started
 
-Clone this repository, install dependencies and run preview using `yarn run dev`.
+Clone this repository, install dependencies and run preview using `npm run dev`.
 
 ```bash
 # Clone this repository
@@ -38,19 +38,19 @@ git clone https://github.com/mubaidr/vue-electron
 cd vue-electron
 
 # Install dependencies
-yarn
+npm install
 
 # Run in `DEV` (Hot Reload) mode
-yarn run dev
+npm run dev
 
 # Build installer for this app
-yarn run build
+npm run build
 
 # Build directory for this app with executeable
-yarn run build:dir
+npm run build:dir
 
 # Lint all source files using ESLINT
-yarn run lint
+npm run lint
 ```
 
 ### Project structure
