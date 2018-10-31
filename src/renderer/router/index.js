@@ -7,15 +7,11 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/home'
-    },
-    {
-      path: '/home',
-      component: require('@/components/Home').default
+      component: require('../components/Home.vue').default,
     },
     {
       path: '*',
-      redirect: '/'
-    }
-  ]
+      redirect: '/',
+    },
+  ],
 })

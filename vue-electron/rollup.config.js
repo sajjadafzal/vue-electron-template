@@ -3,28 +3,29 @@ const builtins = require('rollup-plugin-node-builtins')
 const commonjs = require('rollup-plugin-commonjs')
 const copy = require('rollup-plugin-copy')
 const css = require('rollup-plugin-css-only')
-const globals = require('rollup-plugin-node-globals')
+const deletePlugin = require('rollup-plugin-delete')
 const minify = require('rollup-plugin-babel-minify')
 const resolve = require('rollup-plugin-node-resolve')
-const sass = require('rollup-plugin-sass')
+const scss = require('rollup-plugin-scss')
 const typescript = require('rollup-plugin-typescript')
 const vue = require('rollup-plugin-vue').default
 
 const pkg = require('../package.json')
-const production = !process.env.ROLLUP_WATCH
+const production = !process.env.NODE_ENV === 'development'
 
 module.exports = [
   {
-    external: Object.keys(pkg.dependencies).concat(
-      Object.keys(pkg.devDependencies),
-    ),
+    external: [
+      // ...Object.keys(pkg.dependencies),
+      ...Object.keys(pkg.devDependencies),
+    ],
     input: 'src/main/index.js',
     output: {
       file: 'dist/main/index.js',
       format: 'cjs',
     },
     plugins: [
-      globals(),
+      deletePlugin({ targets: 'dist/*' }),
       builtins(),
       resolve(),
       commonjs(),
@@ -39,14 +40,17 @@ module.exports = [
     ],
     watch: {
       exclude: 'node_modules/**',
-      clearScreen: false,
+      clearScreen: true,
       include: 'src/main/**',
     },
   },
   {
-    external: Object.keys(pkg.dependencies).concat(
-      Object.keys(pkg.devDependencies),
-    ),
+    external: [
+      // ...Object.keys(pkg.dependencies),
+      // ...Object.keys(pkg.devDependencies),
+      'electron',
+      'vue-electron',
+    ],
     input: 'src/renderer/index.js',
     output: {
       file: 'dist/renderer/index.js',
@@ -55,16 +59,18 @@ module.exports = [
     plugins: [
       copy({
         'src/renderer/index.html': 'dist/renderer/index.html',
+        'src/renderer/assets': 'dist/renderer/assets',
       }),
-      globals(),
       builtins(),
-      resolve({
-        extensions: ['.scss', '.sass'],
-      }),
+      resolve(),
       commonjs(),
-      sass(),
+      vue({
+        css: false,
+      }),
+      scss({
+        output: 'dist/renderer/index.css',
+      }),
       css(),
-      vue(),
       typescript(),
       babel({
         exclude: 'node_modules/**',
@@ -76,7 +82,7 @@ module.exports = [
     ],
     watch: {
       exclude: 'node_modules/**',
-      clearScreen: false,
+      clearScreen: true,
       include: ['src/renderer/**'],
     },
   },

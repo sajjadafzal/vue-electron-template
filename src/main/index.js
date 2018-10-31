@@ -1,6 +1,7 @@
 /* eslint-disable */
 const { app, BrowserWindow } = require('electron')
 /* eslint-enable */
+const path = require('path')
 
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = true
 
@@ -19,7 +20,7 @@ if (process.env.NODE_ENV === 'development') {
     )
   }
 } else {
-  winURL = `file://${__dirname}/renderer/index.html`
+  winURL = `file://${path.join(__dirname, '..', 'renderer/index.html')}`
 }
 
 function installDevTools() {

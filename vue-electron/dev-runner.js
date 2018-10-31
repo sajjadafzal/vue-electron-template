@@ -5,6 +5,9 @@ const http = require('http')
 const rollup = require('rollup')
 /* eslint-enable */
 
+// eslint-disable-next-line
+const spinner = require('ora')('Loading...').start()
+
 const path = require('path')
 const { spawn } = require('child_process')
 
@@ -18,18 +21,24 @@ function log(str) {
 }
 
 function startServer() {
-  const server = http.createServer(handler)
+  const server = http.createServer((request, response) => {
+    handler(request, response, {
+      public: 'dist/renderer',
+    })
+  })
   server.listen(9080)
 }
 
 function stopElectron() {
-  if (electronProcess) {
+  if (electronProcess && electronProcess.kill) {
     electronProcess.kill()
     electronProcess = null
   }
 }
 
 function startElectron() {
+  if (electronProcess && electronProcess.kill) return
+
   electronProcess = spawn(electron, [
     '--inspect=5858',
     path.join(__dirname, '../dist/main/index.js'),
@@ -44,7 +53,7 @@ function startElectron() {
   })
 
   electronProcess.on('close', () => {
-    electronProcess.kill()
+    if (electronProcess && electronProcess.kill) electronProcess.kill()
   })
 }
 
@@ -56,24 +65,29 @@ function init() {
 
     switch (code) {
       case 'BUNDLE_START':
-        if (input === 'src/main/index.js') stopElectron()
+        if (input === 'src/main/index.js') {
+          spinner.text = 'Building main script...'
+          stopElectron()
+        } else {
+          spinner.text = 'Building renderer script...'
+        }
         break
       case 'BUNDLE_END':
-        if (input === 'src/main/index.js') startElectron()
+        if (input === 'src/main/index.js') {
+          spinner.text = 'Starting electron...'
+        } else if (isFirstRun) {
+          isFirstRun = false
+          startServer()
+        }
+        spinner.text = 'Waiting for file changes...'
         break
       case 'END':
-        if (isFirstRun) {
-          isFirstRun = false
-
-          startServer()
-          startElectron()
-          // eslint-disable-next-line
-          const spinner = require('ora')('Loading...').start()
-        }
+        startElectron()
         break
       case 'ERROR':
       case 'FATAL':
         console.log('ERROR: ', event.error)
+        spinner.text = 'Error occurred: Waiting for file changes...'
         break
       default:
         break

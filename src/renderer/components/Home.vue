@@ -39,12 +39,12 @@
 </template>
 
 <script>
-import SystemInformation from './Home/SystemInformation'
+import SystemInformation from './Home/SystemInformation.vue'
 
 export default {
   name: 'Home',
 
-  components: { SystemInformation }
+  components: { SystemInformation },
 }
 </script>
 
