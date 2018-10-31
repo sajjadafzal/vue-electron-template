@@ -68,6 +68,7 @@ module.exports = [
         output: 'dist/renderer/index.css',
         includePaths: ['node_modules'],
         indentedSyntax: true,
+        outputStyle: production ? 'compressed' : 'expanded',
       }),
       typescript(),
       babel({
