@@ -2,7 +2,6 @@ const babel = require('rollup-plugin-babel')
 const builtins = require('rollup-plugin-node-builtins')
 const commonjs = require('rollup-plugin-commonjs')
 const copy = require('rollup-plugin-copy')
-const css = require('rollup-plugin-css-only')
 const deletePlugin = require('rollup-plugin-delete')
 const minify = require('rollup-plugin-babel-minify')
 const resolve = require('rollup-plugin-node-resolve')
@@ -64,13 +63,11 @@ module.exports = [
       builtins(),
       resolve(),
       commonjs(),
-      vue({
-        css: false,
-      }),
+      vue(),
       scss({
         output: 'dist/renderer/index.css',
+        includePaths: ['node_modules'],
       }),
-      css(),
       typescript(),
       babel({
         exclude: 'node_modules/**',
