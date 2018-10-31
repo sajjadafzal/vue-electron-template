@@ -67,6 +67,7 @@ module.exports = [
       scss({
         output: 'dist/renderer/index.css',
         includePaths: ['node_modules'],
+        indentedSyntax: true,
       }),
       typescript(),
       babel({
