@@ -27,20 +27,20 @@
       "dist/**/*"
     ],
     "linux": {
-      "icon": "build/icons",
+      "icon": "LogoDesigns/256pxblue.png",
       "publish": [
         "github"
       ]
     },
     "mac": {
-      "icon": "build/icons/icon.icns",
+      "icon": "LogoDesigns/256pxblue.png",
       "publish": [
         "github"
       ]
     },
-    "productName": "productName",
+    "productName": "vue-electron-template",
     "win": {
-      "icon": "build/icons/icon.ico",
+      "icon": "LogoDesigns/256pxblue.png",
       "publish": [
         "github"
       ]
@@ -101,12 +101,12 @@
     "url": "git+https://github.com/mubaidr/vue-electron-template.git"
   },
   "scripts": {
-    "app-deps": "electron-builder install-app-deps",
-    "build": "npm run pack && electron-builder",
+    "build": "cross-env NODE_ENV=production npm run pack && electron-builder",
     "build:dir": "npm run pack && electron-builder --dir",
     "dev": "cross-env NODE_ENV=development node vue-electron/dev-runner.js",
     "lint": "eslint --ext .js,.vue --fix src test",
     "pack": "rollup -c vue-electron/rollup.config.js",
+    "postinstall": "electron-builder install-app-deps",
     "rebuild-electron": "./node_modules/.bin/electron-rebuild"
   },
   "version": "0.0.1"
