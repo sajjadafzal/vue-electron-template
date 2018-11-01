@@ -7,6 +7,8 @@
 
 The boilerplate for electron applications using vue.js
 
+> Checkout [vue-electron-template](https://github.com/mubaidr/vue-electron-template/tree/master) using webpack.
+
 ## Overview
 
 `vue-electron` takes advantage of `rollup.js`, `electron-builder`, and some of the most used plugins like `vue-router`, `vuex` and so much more to provide an easy to use development and building enviroment using `vue.js`.
