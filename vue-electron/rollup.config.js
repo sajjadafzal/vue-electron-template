@@ -21,9 +21,7 @@ fs.createReadStream('src/renderer/index.html').pipe(
 
 module.exports = [
   {
-    external: [
-      ...Object.keys(pkg.devDependencies).filter(p => [].indexOf(p) === -1),
-    ],
+    external: ['electron'],
     input: 'src/main/index.js',
     output: {
       file: 'dist/main/index.js',

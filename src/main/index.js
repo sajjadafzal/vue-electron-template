@@ -8,7 +8,7 @@ let mainWindow
 let winURL = 'http://localhost:9080'
 
 if (app.isPackaged) {
-  winURL = `file://${__dirname}/renderer/index.html`
+  winURL = `file://${__dirname}/../renderer/index.html`
 } else {
   // eslint-disable-next-line
   require('electron-debug')()

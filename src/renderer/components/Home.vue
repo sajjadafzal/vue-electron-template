@@ -13,7 +13,8 @@
         <div class="block has-text-centered">
           <a
             class="button is-info"
-            href="https://github.com/mubaidr">
+            href="https://github.com/mubaidr"
+            target="_blank">
             <span class="icon">
               <i class="fa fa-star" />
             </span>
