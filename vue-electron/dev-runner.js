@@ -7,6 +7,7 @@ const rollup = require('rollup')
 
 // eslint-disable-next-line
 const spinner = require('ora')('Loading...').start()
+let watcher
 
 const path = require('path')
 const { spawn } = require('child_process')
@@ -41,12 +42,16 @@ function startElectron() {
   ])
 
   electronProcess.on('close', () => {
-    if (electronProcess && electronProcess.kill) electronProcess.kill()
+    stopElectron()
+
+    watcher.close()
+    spinner.stop()
+    process.exit(0)
   })
 }
 
 function init() {
-  const watcher = rollup.watch(watchConfig)
+  watcher = rollup.watch(watchConfig)
 
   watcher.on('event', event => {
     const { code, input } = event

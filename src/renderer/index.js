@@ -1,4 +1,5 @@
-import Vue from 'vue'
+import Vue from 'vue/dist/vue.esm.js'
+import vueElectron from 'vue-electron'
 
 import 'bulma-addons/bulma.sass'
 import 'bulma-pro/bulma.sass'
@@ -13,7 +14,7 @@ import store from './store'
 Vue.config.productionTip = false
 Vue.config.devtools = true
 
-Vue.use(require('vue-electron'))
+Vue.use(vueElectron)
 
 /* eslint-disable no-new */
 new Vue({
@@ -24,8 +25,3 @@ new Vue({
   store,
   template: '<App/>',
 }).$mount('#app')
-
-/* Enable webpack hot reloading */
-if (module.hot) {
-  module.hot.accept()
-}

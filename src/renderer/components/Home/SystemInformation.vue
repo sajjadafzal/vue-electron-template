@@ -28,15 +28,17 @@
 </template>
 
 <script>
+import { version } from 'vue/package.json'
+
 export default {
   data() {
     return {
       versions: process.versions,
       platform: require('os').platform(),
-      vue: require('vue/package.json').version
+      vue: version,
     }
   },
-  created() {}
+  created() {},
 }
 </script>
 

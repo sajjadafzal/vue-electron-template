@@ -1,8 +1,10 @@
+const fs = require('fs')
+
 const babel = require('rollup-plugin-babel')
 const builtins = require('rollup-plugin-node-builtins')
 const commonjs = require('rollup-plugin-commonjs')
 const copy = require('rollup-plugin-copy')
-const deletePlugin = require('rollup-plugin-delete')
+const json = require('rollup-plugin-json')
 const minify = require('rollup-plugin-babel-minify')
 const resolve = require('rollup-plugin-node-resolve')
 const scss = require('rollup-plugin-scss')
@@ -12,26 +14,24 @@ const vue = require('rollup-plugin-vue').default
 const pkg = require('../package.json')
 const production = process.env.NODE_ENV === 'production'
 
+fs.createReadStream('src/renderer/index.html').pipe(
+  fs.createWriteStream('dist/renderer/index.html'),
+)
+
 module.exports = [
   {
-    external: [
-      // ...Object.keys(pkg.dependencies),
-      ...Object.keys(pkg.devDependencies).filter(
-        item =>
-          ['vue-devtools', 'electron-debug', 'devtron'].indexOf(item) === -1,
-      ),
-    ],
+    external: [...Object.keys(pkg.devDependencies)],
     input: 'src/main/index.js',
     output: {
       file: 'dist/main/index.js',
       format: 'cjs',
     },
     plugins: [
-      deletePlugin({ targets: 'dist/main/*' }),
       builtins(),
       resolve(),
       commonjs(),
       typescript(),
+      json(),
       babel({
         exclude: 'node_modules/**',
       }),
@@ -47,21 +47,14 @@ module.exports = [
     },
   },
   {
-    external: [
-      // ...Object.keys(pkg.dependencies),
-      // ...Object.keys(pkg.devDependencies),
-      'electron',
-      'vue-electron',
-    ],
+    external: [...Object.keys(pkg.devDependencies)],
     input: 'src/renderer/index.js',
     output: {
       file: 'dist/renderer/index.js',
       format: 'cjs',
     },
     plugins: [
-      deletePlugin({ targets: 'dist/renderer/*' }),
       copy({
-        'src/renderer/index.html': 'dist/renderer/index.html',
         'src/renderer/assets': 'dist/renderer/assets',
       }),
       builtins(),
@@ -75,6 +68,7 @@ module.exports = [
         outputStyle: production ? 'compressed' : 'expanded',
       }),
       typescript(),
+      json(),
       babel({
         exclude: 'node_modules/**',
       }),

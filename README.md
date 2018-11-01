@@ -1,4 +1,4 @@
-<p align="center"><img src="https://raw.githubusercontent.com/jbeguna04/vue-electron-template/master/LogoDesigns/logotype1blue.png"></p>
+<p align="center"><img src="./LogoDesigns/logotype1blue.png"></p>
 
 # Vue-Electron-Template
 
@@ -25,6 +25,10 @@ The boilerplate for electron applications using vue.js
 - ESLint configured
 - Babel configured
 - Sample Travis and AppVeyor configs
+
+### Screenshot
+
+<p align="center"><img src="./screenshot.png"></p>
 
 ### Getting Started
 
