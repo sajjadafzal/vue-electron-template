@@ -22,6 +22,8 @@ function startServer() {
     root: 'dist/renderer/',
     port: '9080',
     open: false,
+    logLevel: 0,
+    wait: 100,
   })
 }
 
