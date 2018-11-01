@@ -10,13 +10,16 @@ const typescript = require('rollup-plugin-typescript')
 const vue = require('rollup-plugin-vue').default
 
 const pkg = require('../package.json')
-const production = !process.env.NODE_ENV === 'development'
+const production = process.env.NODE_ENV === 'production'
 
 module.exports = [
   {
     external: [
       // ...Object.keys(pkg.dependencies),
-      ...Object.keys(pkg.devDependencies),
+      ...Object.keys(pkg.devDependencies).filter(
+        item =>
+          ['vue-devtools', 'electron-debug', 'devtron'].indexOf(item) === -1,
+      ),
     ],
     input: 'src/main/index.js',
     output: {
@@ -24,7 +27,7 @@ module.exports = [
       format: 'cjs',
     },
     plugins: [
-      deletePlugin({ targets: 'dist/*' }),
+      deletePlugin({ targets: 'dist/main/*' }),
       builtins(),
       resolve(),
       commonjs(),
@@ -56,6 +59,7 @@ module.exports = [
       format: 'cjs',
     },
     plugins: [
+      deletePlugin({ targets: 'dist/renderer/*' }),
       copy({
         'src/renderer/index.html': 'dist/renderer/index.html',
         'src/renderer/assets': 'dist/renderer/assets',

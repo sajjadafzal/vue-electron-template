@@ -16,10 +16,6 @@ const watchConfig = require('./rollup.config')
 let isFirstRun = true
 let electronProcess = null
 
-function log(str) {
-  console.log(`\n${str.toString()}`)
-}
-
 function startServer() {
   const server = http.createServer((request, response) => {
     handler(request, response, {
@@ -43,14 +39,6 @@ function startElectron() {
     '--inspect=5858',
     path.join(__dirname, '../dist/main/index.js'),
   ])
-
-  electronProcess.stdout.on('data', data => {
-    log(data)
-  })
-
-  electronProcess.stderr.on('data', data => {
-    log(data)
-  })
 
   electronProcess.on('close', () => {
     if (electronProcess && electronProcess.kill) electronProcess.kill()

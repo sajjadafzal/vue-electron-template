@@ -1,5 +1,9 @@
 /* eslint-disable */
 const { app, BrowserWindow } = require('electron')
+
+require('electron-debug')({
+  showDevTools: true,
+})
 /* eslint-enable */
 const path = require('path')
 
@@ -8,31 +12,8 @@ process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = true
 let mainWindow
 let winURL = 'http://localhost:9080'
 
-if (process.env.NODE_ENV === 'development') {
-  try {
-    // eslint-disable-next-line
-    require('electron-debug')({
-      showDevTools: true,
-    })
-  } catch (err) {
-    console.log(
-      'Failed to install `electron-debug`: Please set `NODE_ENV=production` before build to avoid installing debugging packages. ',
-    )
-  }
-} else {
+if (process.env.NODE_ENV === 'production')
   winURL = `file://${path.join(__dirname, '..', 'renderer/index.html')}`
-}
-
-function installDevTools() {
-  try {
-    require('devtron').install() //eslint-disable-line
-    require('vue-devtools').install() //eslint-disable-line
-  } catch (err) {
-    console.log(
-      'Failed to install `devtron` & `vue-devtools`: Please set `NODE_ENV=production` before build to avoid installing debugging packages. ',
-    )
-  }
-}
 
 function createWindow() {
   /**
@@ -46,8 +27,8 @@ function createWindow() {
     minHeight: 350,
     backgroundColor: '#fff',
     webPreferences: {
-      nodeIntegrationInWorker: true,
-      webSecurity: false,
+      nodeIntegrationInWorker: false,
+      webSecurity: true,
     },
     show: false,
   })
@@ -61,9 +42,11 @@ function createWindow() {
     mainWindow.focus()
 
     if (
+      process.env.NODE_ENV === 'development' ||
       process.env.ELECTRON_ENV === 'development' ||
       process.argv.indexOf('--debug') !== -1
     ) {
+      require('vue-devtools').install() //eslint-disable-line
       mainWindow.webContents.openDevTools()
     }
   })
@@ -73,13 +56,7 @@ function createWindow() {
   })
 }
 
-app.on('ready', () => {
-  createWindow()
-
-  if (process.env.NODE_ENV === 'development') {
-    installDevTools()
-  }
-})
+app.on('ready', createWindow)
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
