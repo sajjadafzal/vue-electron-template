@@ -1,19 +1,18 @@
 /* eslint-disable */
 const { app, BrowserWindow } = require('electron')
-
-require('electron-debug')({
-  showDevTools: true,
-})
 /* eslint-enable */
-const path = require('path')
 
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = true
 
 let mainWindow
 let winURL = 'http://localhost:9080'
 
-if (process.env.NODE_ENV === 'production')
-  winURL = `file://${path.join(__dirname, '..', 'renderer/index.html')}`
+if (app.isPackaged) {
+  winURL = `file://${__dirname}/renderer/index.html`
+} else {
+  // eslint-disable-next-line
+  require('electron-debug')()
+}
 
 function createWindow() {
   /**
@@ -41,12 +40,10 @@ function createWindow() {
     mainWindow.show()
     mainWindow.focus()
 
-    if (
-      process.env.NODE_ENV === 'development' ||
-      process.env.ELECTRON_ENV === 'development' ||
-      process.argv.indexOf('--debug') !== -1
-    ) {
+    if (!app.isPackaged) {
       require('vue-devtools').install() //eslint-disable-line
+      mainWindow.webContents.openDevTools()
+    } else if (process.argv.indexOf('--debug') !== -1) {
       mainWindow.webContents.openDevTools()
     }
   })

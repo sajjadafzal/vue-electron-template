@@ -15,14 +15,6 @@
             class="button is-info"
             href="https://github.com/mubaidr">
             <span class="icon">
-              <i class="fab fa-github" />
-            </span>
-            <span>Follow me</span>
-          </a>
-          <a
-            class="button is-info"
-            href="https://github.com/mubaidr">
-            <span class="icon">
               <i class="fa fa-star" />
             </span>
             <span>Star</span>

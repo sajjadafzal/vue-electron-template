@@ -12,7 +12,8 @@ const typescript = require('rollup-plugin-typescript')
 const vue = require('rollup-plugin-vue').default
 
 const pkg = require('../package.json')
-const production = process.env.NODE_ENV === 'production'
+
+const production = !process.env.NODE_ENV === 'development'
 
 fs.createReadStream('src/renderer/index.html').pipe(
   fs.createWriteStream('dist/renderer/index.html'),
@@ -20,7 +21,9 @@ fs.createReadStream('src/renderer/index.html').pipe(
 
 module.exports = [
   {
-    external: [...Object.keys(pkg.devDependencies)],
+    external: [
+      ...Object.keys(pkg.devDependencies).filter(p => [].indexOf(p) === -1),
+    ],
     input: 'src/main/index.js',
     output: {
       file: 'dist/main/index.js',

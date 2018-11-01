@@ -14,6 +14,7 @@ const { spawn } = require('child_process')
 
 const watchConfig = require('./rollup.config')
 
+let isManualRestart = false
 let isFirstRun = true
 let electronProcess = null
 
@@ -27,6 +28,8 @@ function startServer() {
 }
 
 function stopElectron() {
+  isManualRestart = true
+
   if (electronProcess && electronProcess.kill) {
     electronProcess.kill()
     electronProcess = null
@@ -44,9 +47,11 @@ function startElectron() {
   electronProcess.on('close', () => {
     stopElectron()
 
-    watcher.close()
-    spinner.stop()
-    process.exit(0)
+    if (!isManualRestart) {
+      watcher.close()
+      spinner.stop()
+      process.exit(0)
+    }
   })
 }
 
