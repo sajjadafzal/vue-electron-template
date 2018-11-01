@@ -1,8 +1,7 @@
 /* eslint-disable*/
 const electron = require('electron')
-const handler = require('serve-handler')
-const http = require('http')
 const rollup = require('rollup')
+const liveServer = require('live-server')
 /* eslint-enable */
 
 // eslint-disable-next-line
@@ -19,12 +18,11 @@ let isFirstRun = true
 let electronProcess = null
 
 function startServer() {
-  const server = http.createServer((request, response) => {
-    handler(request, response, {
-      public: 'dist/renderer',
-    })
+  liveServer.start({
+    root: 'dist/renderer/',
+    port: '9080',
+    open: false,
   })
-  server.listen(9080)
 }
 
 function stopElectron() {
