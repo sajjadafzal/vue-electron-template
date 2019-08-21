@@ -1,39 +1,53 @@
 <template>
   <div>
-    <section class="hero is-dark is-bold">
-      <div class="hero-body">
-        <br />
-        <div class="block has-text-centered">
-          <figure class="image is-128x128">
-            <img alt="Placeholder image" src="../../../_icons/512pxblue.png" />
-          </figure>
-        </div>
-        <div class="content has-text-centered">
-          <h1 class="title is-4">
-            Vue-Electron-Template
-          </h1>
-          <p class="subtitle is-6">
-            The boilerplate for making electron applications using vue.js.
-          </p>
-          <RouterLink class="button is-light" to="about">
-            <i class="material-icons">view_carousel</i>
-            <span>About</span>
-          </RouterLink>
-          <RouterLink class="button is-light" to="help">
-            <i class="material-icons">flash_on</i>
-            <span>Help</span>
-          </RouterLink>
-        </div>
-      </div>
-    </section>
+    <div id="divCanvas">
+      <canvas id="mainCanvas" width="640" height="480"></canvas>
+    </div>
+    <div id="divToolbar">
+      <button id="clear" @click="clearCanvas">
+        <i class="material-icons md-dark md-48">remove_from_queue</i>
+        <br />Clear
+      </button>
+      <button id="draw">
+        <i class="material-icons md-dark md-48">create</i>
+        <br />draw
+      </button>
+      <button id="selection">
+        <i class="material-icons md-dark md-48">open_with</i>
+        <br />Select
+      </button>
+      <button id="DrawOptions">
+        <i class="material-icons md-dark md-48">more_horiz</i>
+        <br />Draw
+        <br />Options
+      </button>
+      <span>No of Canvas Objects</span>
+      <span id="CanvasObjectsNumbers"></span>
+      <span>Mouse:</span>
+      <span id="Mouse"></span>
+    </div>
+    <!--{{$data}} {{poka}} !-->
   </div>
 </template>
 
 <script>
+// import { canvas } from './designer'
+import { clearFabricCanvas, addCanvas } from './toolbar.ts'
+
 import Vue from 'vue'
 
 export default Vue.extend({
   name: 'Home',
+
+  data() {
+    return {}
+  },
+
+  methods: {
+    clearCanvas(e) {
+      clearFabricCanvas(e)
+    },
+  },
 })
 </script>
 

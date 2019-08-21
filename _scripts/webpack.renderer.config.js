@@ -18,7 +18,7 @@ const isDevMode = process.env.NODE_ENV === 'development'
 const config = {
   name: 'renderer',
   mode: process.env.NODE_ENV,
-  devtool: isDevMode ? 'eval' : false,
+  devtool: isDevMode ? 'cheap-eval-source-map' : false,
   entry: {
     renderer: path.join(__dirname, '../src/renderer/main.js'),
   },
@@ -132,24 +132,12 @@ if (isDevMode) {
   // any dev only config
   config.plugins.push(new webpack.HotModuleReplacementPlugin())
 } else {
-  config.plugins.push(
-    new ScriptExtHtmlWebpackPlugin({
-      async: [/runtime/],
-      defaultAttribute: 'defer',
-    })
-    // new CopyWebpackPlugin([
-    //   {
-    //     from: path.join(__dirname, '../src/data'),
-    //     to: path.join(__dirname, '../dist/data'),
-    //   },
-    // ])
-  )
-
-  // config.optimization = {
-  //   splitChunks: {
-  //     chunks: 'all',
-  //   },
-  // }
+  config.plugins.push(new CopyWebpackPlugin([{ from: 'static' }]))
+  config.optimization = {
+    splitChunks: {
+      chunks: 'all',
+    },
+  }
 }
 
 module.exports = config
