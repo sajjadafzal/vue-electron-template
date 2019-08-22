@@ -1,7 +1,7 @@
 enum Colors {
   RED = '#ff0000',
-  GREEN = '#ff0000',
-  BLUE = '#ff0000',
+  GREEN = '#00ff00',
+  BLUE = '#0000ff',
 }
 
 export default Colors
