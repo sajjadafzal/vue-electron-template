@@ -10,7 +10,8 @@
     "vue-electron": "^1.0.6",
     "vue-router": "^3.1.2",
     "vue-toasted": "^1.1.27",
-    "vuex": "^3.1.1"
+    "vuex": "^3.1.1",
+    "konva": "^4.0.5"
   },
   "description": "An electron-vue project",
   "devDependencies": {
@@ -19,7 +20,6 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-typescript": "^7.3.3",
-    "@types/fabric": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^1.13.0",
     "@typescript-eslint/parser": "^1.13.0",
     "acorn": "^6.2.1",

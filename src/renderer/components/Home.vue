@@ -1,18 +1,20 @@
 <template>
   <div>
-    <div id="divCanvas">
-      <canvas id="mainCanvas" width="640" height="480"></canvas>
-    </div>
+    <div id="divCanvas"></div>
     <div id="divToolbar">
       <button id="clear" @click="clearCanvas">
         <i class="material-icons md-dark md-48">remove_from_queue</i>
         <br />Clear
       </button>
-      <button id="draw">
+      <button id="draw" @click="enableDraw">
         <i class="material-icons md-dark md-48">create</i>
         <br />draw
       </button>
-      <button id="selection">
+      <button @click="addCircle">
+        <i class="material-icons md-dark md-48">add_circle_outline</i>
+        <br />Circle
+      </button>
+      <button @click="enableSelection">
         <i class="material-icons md-dark md-48">open_with</i>
         <br />Select
       </button>
@@ -27,32 +29,44 @@
       <span id="Mouse"></span>
     </div>
     <!--{{$data}} {{poka}} !-->
+    {{canvasState}}
   </div>
 </template>
 
 <script>
-// import { canvas } from './designer'
-import { clearFabricCanvas, addCanvas } from './toolbar.ts'
+import { createCanvas } from './stage'
+import { clearCanvas, enableDraw, addCircle, enableSelection } from './toolbar'
+import { canvasState } from './utilities'
 
-import Vue from 'vue'
-
-export default Vue.extend({
+export default {
   name: 'Home',
 
   data() {
-    return {}
+    return { canvasState }
   },
 
   methods: {
-    clearCanvas(e) {
-      clearFabricCanvas(e)
+    clearCanvas() {
+      clearCanvas()
+    },
+
+    enableDraw() {
+      canvasState.setDrawMode()
+    },
+
+    addCircle() {},
+
+    enableSelection() {
+      canvasState.setSelectionMode()
     },
   },
-})
+
+  created() {},
+
+  mounted() {
+    createCanvas()
+  },
+}
 </script>
 
-<style>
-.hero-body {
-  height: 100vh;
-}
-</style>
+<style></style>
