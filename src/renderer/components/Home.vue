@@ -36,7 +36,7 @@
 <script>
 import { createCanvas } from './stage'
 import { clearCanvas, enableDraw, addCircle, enableSelection } from './toolbar'
-import { canvasState } from './utilities'
+import { canvasState, CanvasModes } from './utilities'
 
 export default {
   name: 'Home',
@@ -51,13 +51,13 @@ export default {
     },
 
     enableDraw() {
-      canvasState.setDrawMode()
+      canvasState.setMode(CanvasModes.DRAW_RECTANGLE)
     },
 
     addCircle() {},
 
     enableSelection() {
-      canvasState.setSelectionMode()
+      canvasState.setMode(CanvasModes.SELECTION)
     },
   },
 
@@ -69,4 +69,8 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+canvas {
+  border: 1px solid red;
+}
+</style>

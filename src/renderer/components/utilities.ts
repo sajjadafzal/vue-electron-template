@@ -24,16 +24,6 @@ class CanvasState {
 
   constructor() {}
 
-  setDrawMode() {
-    this.canvasMode = CanvasModes.DRAW_RECTANGLE
-    return this /* For enabling syntax like "function1().function2()" */
-  }
-
-  setSelectionMode() {
-    this.canvasMode = CanvasModes.SELECTION
-    return this
-  }
-
   getMode(): CanvasModes {
     return this.canvasMode
   }
@@ -43,5 +33,4 @@ class CanvasState {
   }
 }
 
-class ChoiceBox()
 export const canvasState = new CanvasState() /* canvasState is an object reference and the reference will remain constant. Means we can change the object properties. */
