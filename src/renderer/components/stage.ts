@@ -55,7 +55,8 @@ export function createCanvas() {
   stage.on('mouseup', function(e: KonvaEventObject<MouseEvent>) {
     switch (canvasState.getMode()) {
       case CanvasModes.DRAW_RECTANGLE:
-        if (!inProgressRect) return
+        if (!inProgressRect)
+          return /* checking for reference-rectangle in case the pointer has left the stage, the action is void (reference-rectangle is removed upon stage leaving) */
 
         endPos.x = e.evt.clientX
         endPos.y = e.evt.clientY
@@ -74,6 +75,7 @@ export function createCanvas() {
           y: startPos.y,
           width: width,
           height: height,
+          text: 'A',
         })
 
         break
@@ -84,6 +86,7 @@ export function createCanvas() {
   })
 
   stage.on('mouseleave', function(e: KonvaEventObject<MouseEvent>) {
+    /*Remove the reference drawing upon mouse leaving the stage */
     if (inProgressRect) {
       inProgressRect.remove()
       inProgressRect = undefined
