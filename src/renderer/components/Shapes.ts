@@ -4,23 +4,18 @@ import { parentLayer } from './stage'
 interface Config {
   x: number
   y: number
-  text: string
-  stroke?: string
   width: number
   height: number
+  text: string
+
+  stroke?: string
   strokeWidth?: number
   fontSize?: number
-  fontFamily?: String
-  fill?: number
-}
-
-interface TextConfig {
-  x: number
-  y: number
-  text?: string
-  fontSize?: number
-  fontFamily?: String
-  fill?: number
+  fontFamily?: string
+  fill?: string
+  opacity?: number
+  align?: string
+  verticalAlign?: string
 }
 
 var defaults = {
@@ -30,33 +25,28 @@ var defaults = {
   width: 20,
   height: 20,
   strokeWidth: 2,
-}
-
-var textDefaults = {
   text: '',
-  fontSize: 30,
+  fontSize: 18,
   fontFamily: 'Calibri',
-  fill: defaults.stroke,
+  fill: 'RGB(185,185,185)',
+  padding: 0,
+  margin: 0,
+  opacity: 1,
+  align: 'center',
+  verticalAlign: 'middle',
 }
 
-function getConfig(config: Config) {
+export function getConfig(config: Config) {
   return {
     ...defaults,
-    ...textDefaults,
     ...config,
-  }
-}
-
-function getTextConfig(textConfig: TextConfig) {
-  return {
-    ...textDefaults,
-    ...textConfig,
   }
 }
 
 export class ChoiceBox {
   private rect: Konva.Rect
   private text: Konva.Text
+  private group = new Konva.Group()
 
   get x(): number {
     return this.rect.getAttr('x')
@@ -76,12 +66,41 @@ export class ChoiceBox {
     parentLayer.draw()
   }
   constructor(config: Config) {
-    this.rect = new Konva.Rect(getConfig(config))
-    this.text = new Konva.Text({
-      x: config.width / 2,
-      y: config.height / 2,
+    let thisConfig = {
+      ...defaults,
+      ...config,
+    }
+
+    this.rect = new Konva.Rect({
+      x: thisConfig.x,
+      y: thisConfig.y,
+      width: thisConfig.width,
+      height: thisConfig.height,
+      stroke: thisConfig.stroke,
+      strokeWidth: thisConfig.strokeWidth,
+      padding: thisConfig.padding,
+      margin: thisConfig.margin,
     })
-    parentLayer.add(this.rect)
+    this.text = new Konva.Text({
+      x: thisConfig.x, // + thisConfig.width / 2,
+      y: thisConfig.y, // + config.height / 2,
+      width: thisConfig.width,
+      height: thisConfig.height,
+      text: thisConfig.text,
+      fontSize: thisConfig.fontSize,
+      fontFamily: thisConfig.fontFamily,
+      padding: thisConfig.padding,
+      margin: thisConfig.margin,
+      align: thisConfig.align,
+      verticalAlign: thisConfig.verticalAlign,
+      fill: thisConfig.fill,
+      opacity: thisConfig.opacity,
+    })
+    //this.group.setAttr('draggable', true)
+    this.group.add(this.rect)
+    this.group.add(this.text)
+    parentLayer.add(this.group)
+    //parentLayer.add(this.text)
     parentLayer.draw()
   }
 

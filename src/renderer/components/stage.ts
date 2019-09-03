@@ -70,14 +70,18 @@ export function createCanvas() {
 
         if (width < 10 || height < 10) return
 
-        new ChoiceBox({
+        let conf = {
           x: startPos.x,
           y: startPos.y,
           width: width,
           height: height,
           text: 'A',
-        })
+          fontSize: 30,
+          fill: 'RGB(160,160,160)',
+        }
 
+        let ch = new ChoiceBox(conf)
+        console.log(startPos.x, startPos.y, width, height)
         break
       case CanvasModes.SELECTION:
       default:

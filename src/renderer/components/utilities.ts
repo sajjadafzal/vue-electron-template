@@ -9,7 +9,11 @@ enum Shapes {
 export class Point {
   x: number
   y: number
-  constructor() {}
+
+  constructor(xVal?: number, yVal?: number) {
+    this.x = xVal || 0
+    this.y = yVal || 0
+  }
 }
 /** Different modes of canvas or stage */
 export enum CanvasModes {
