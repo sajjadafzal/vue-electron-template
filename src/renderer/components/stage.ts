@@ -76,14 +76,22 @@ export function createCanvas() {
           width: width,
           height: height,
           text: 'A',
-          fontSize: 30,
+          fontSize: 15,
           fill: 'RGB(160,160,160)',
+          cornerRadius: 15,
         }
 
         let ch = new ChoiceBox(conf)
-        console.log(startPos.x, startPos.y, width, height)
+
         break
       case CanvasModes.SELECTION:
+        if (e.target === stage) {
+          stage.find('Transformer')[0].destroy()
+          parentLayer.draw()
+          console.log(e)
+          return
+        }
+
       default:
         return
     }
@@ -114,5 +122,28 @@ export function createCanvas() {
       default:
         return
     }
+  })
+
+  stage.on('click tap', function(e: KonvaEventObject<MouseEvent>) {
+    // if click on empty area - remove all transformers
+    if (e.target === stage) {
+      stage.find('Transformer').each(el => el.destroy())
+
+      parentLayer.draw()
+      return
+    }
+    // do nothing if clicked NOT on our rectangles
+    if (!e.target.hasName('rect')) {
+      return
+    }
+    // remove old transformers
+    // TODO: we can skip it if current rect is already selected
+    //stage.find('Transformer').destroy()
+
+    // create new transformer
+    var tr = new Konva.Transformer()
+    parentLayer.add(tr)
+    tr.attachTo(e.target)
+    parentLayer.draw()
   })
 }

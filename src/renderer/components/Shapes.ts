@@ -2,14 +2,16 @@ import Konva from 'konva'
 import { parentLayer } from './stage'
 
 interface Config {
+  //Shared Properties of Konva.Rect and Konva.Text
   x: number
   y: number
   width: number
   height: number
-  text: string
-
-  stroke?: string
+  //Only Properties of Konva.Rect
   strokeWidth?: number
+  cornerRadius?: number
+  //Only Properties of Konva.Text
+  text: string
   fontSize?: number
   fontFamily?: string
   fill?: string
@@ -34,9 +36,10 @@ var defaults = {
   opacity: 1,
   align: 'center',
   verticalAlign: 'middle',
+  cornerRadius: 0,
 }
 
-export function getConfig(config: Config) {
+function getConfig(config: Config) {
   return {
     ...defaults,
     ...config,
@@ -45,7 +48,7 @@ export function getConfig(config: Config) {
 
 export class ChoiceBox {
   private rect: Konva.Rect
-  private text: Konva.Text
+  private ktext: Konva.Text
   private group = new Konva.Group()
 
   get x(): number {
@@ -65,6 +68,16 @@ export class ChoiceBox {
     this.rect.setAttr('y', value)
     parentLayer.draw()
   }
+
+  get text(): string {
+    return this.ktext.getAttr('text')
+  }
+
+  set text(value: string) {
+    this.rect.setAttr('text', value)
+    parentLayer.draw()
+  }
+
   constructor(config: Config) {
     let thisConfig = {
       ...defaults,
@@ -80,10 +93,11 @@ export class ChoiceBox {
       strokeWidth: thisConfig.strokeWidth,
       padding: thisConfig.padding,
       margin: thisConfig.margin,
+      cornerRadius: thisConfig.cornerRadius,
     })
-    this.text = new Konva.Text({
-      x: thisConfig.x, // + thisConfig.width / 2,
-      y: thisConfig.y, // + config.height / 2,
+    this.ktext = new Konva.Text({
+      x: thisConfig.x,
+      y: thisConfig.y,
       width: thisConfig.width,
       height: thisConfig.height,
       text: thisConfig.text,
@@ -98,7 +112,7 @@ export class ChoiceBox {
     })
     //this.group.setAttr('draggable', true)
     this.group.add(this.rect)
-    this.group.add(this.text)
+    this.group.add(this.ktext)
     parentLayer.add(this.group)
     //parentLayer.add(this.text)
     parentLayer.draw()

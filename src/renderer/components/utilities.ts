@@ -19,6 +19,7 @@ export class Point {
 export enum CanvasModes {
   SELECTION = 'SELECTION',
   DRAW_RECTANGLE = 'DRAW_RECTANGLE',
+  DRAW_CHOICES = 'DRAW_CHOICES',
 }
 
 class CanvasState {

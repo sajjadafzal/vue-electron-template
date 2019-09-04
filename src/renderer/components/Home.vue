@@ -18,10 +18,10 @@
         <i class="material-icons md-dark md-48">open_with</i>
         <br />Select
       </button>
-      <button id="DrawOptions">
+      <button id="DrawChoices" @click="drawChoices">
         <i class="material-icons md-dark md-48">more_horiz</i>
         <br />Draw
-        <br />Options
+        <br />Choices
       </button>
       <span>No of Canvas Objects</span>
       <span id="CanvasObjectsNumbers"></span>
@@ -35,7 +35,7 @@
 
 <script>
 import { createCanvas } from './stage'
-import { clearCanvas, enableDraw, addCircle, enableSelection } from './toolbar'
+import { clearCanvas } from './toolbar'
 import { canvasState, CanvasModes } from './utilities'
 
 export default {
@@ -58,6 +58,10 @@ export default {
 
     enableSelection() {
       canvasState.setMode(CanvasModes.SELECTION)
+    },
+
+    drawChoices() {
+      canvasState.setMode(CanvasModes.DRAW_CHOICES)
     },
   },
 
