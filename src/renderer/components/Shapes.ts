@@ -1,7 +1,8 @@
 import Konva from 'konva'
 import { parentLayer } from './stage'
+import { drawChoices } from './toolbar'
 
-interface Config {
+interface ChoiceBoxConfig {
   //Shared Properties of Konva.Rect and Konva.Text
   x: number
   y: number
@@ -36,10 +37,10 @@ var defaults = {
   opacity: 1,
   align: 'center',
   verticalAlign: 'middle',
-  cornerRadius: 0,
+  cornerRadius: 8,
 }
 
-function getConfig(config: Config) {
+function getConfig(config: ChoiceBoxConfig) {
   return {
     ...defaults,
     ...config,
@@ -78,7 +79,7 @@ export class ChoiceBox {
     parentLayer.draw()
   }
 
-  constructor(config: Config) {
+  constructor(config: ChoiceBoxConfig) {
     let thisConfig = {
       ...defaults,
       ...config,
@@ -95,6 +96,7 @@ export class ChoiceBox {
       margin: thisConfig.margin,
       cornerRadius: thisConfig.cornerRadius,
     })
+
     this.ktext = new Konva.Text({
       x: thisConfig.x,
       y: thisConfig.y,
@@ -118,8 +120,73 @@ export class ChoiceBox {
     parentLayer.draw()
   }
 
-  public update(config: Config) {
+  public update(config: ChoiceBoxConfig) {
     this.rect.setAttrs(config)
     parentLayer.draw()
+  }
+}
+
+interface MultipleChoicesConfig {
+  x: number
+  y: number
+  titleToChoice_Distance: number
+  choiceToChoice_Distance: number
+  Title: string
+  titleWidth: number
+  titleHeight: number
+  choices: Array<string>
+  choiceBoxWidth: number
+  choiceBoxHeight: number
+}
+
+var mulipleChoicesDefaults = {
+  x: 0,
+  y: 0,
+  choiceBoxWidth: 10,
+  choiceBoxHeight: 10,
+  titleWidth: 10,
+  titleHeight: 10,
+  titleToChoice_Distance: 10,
+  choiceToChoice_Distance: 20,
+  Title: 'Title',
+  choices: [],
+}
+export class MultipleChoices {
+  constructor(config: MultipleChoicesConfig) {
+    // let xOffset: number
+    // x: 100
+    let thisConfig = {
+      ...mulipleChoicesDefaults,
+      ...config,
+    }
+
+    let ch = new ChoiceBox({
+      x: thisConfig.x,
+      y: thisConfig.y,
+      width: thisConfig.titleWidth,
+      height: thisConfig.titleHeight,
+      text: thisConfig.Title,
+      strokeWidth: 0,
+      fontSize: thisConfig.titleHeight,
+      align: 'left',
+    })
+
+    let x = 0
+
+    thisConfig.choices.forEach((choice, index) => {
+      let y: number
+      if (index === 0) x = thisConfig.x + thisConfig.titleToChoice_Distance
+      else x = x + thisConfig.choiceToChoice_Distance
+      y = thisConfig.y
+
+      let ch = new ChoiceBox({
+        x: x,
+        y: y,
+        width: thisConfig.choiceBoxWidth,
+        height: thisConfig.choiceBoxHeight,
+        text: choice,
+      })
+    })
+    //parentLayer.draw()
   }
 }

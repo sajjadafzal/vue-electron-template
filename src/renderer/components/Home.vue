@@ -35,7 +35,7 @@
 
 <script>
 import { createCanvas } from './stage'
-import { clearCanvas } from './toolbar'
+import { clearCanvas, drawChoices } from './toolbar'
 import { canvasState, CanvasModes } from './utilities'
 
 export default {
@@ -62,6 +62,7 @@ export default {
 
     drawChoices() {
       canvasState.setMode(CanvasModes.DRAW_CHOICES)
+      drawChoices()
     },
   },
 

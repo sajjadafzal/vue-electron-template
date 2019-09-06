@@ -1,6 +1,6 @@
 import Konva from 'konva'
 import { canvasState, CanvasModes, Point } from './utilities'
-import { KonvaEventObject } from 'konva/types/Node'
+import { KonvaEventObject, NodeConfig } from 'konva/types/Node'
 
 import { start } from 'repl'
 import { ChoiceBox } from './Shapes'
@@ -86,7 +86,7 @@ export function createCanvas() {
         break
       case CanvasModes.SELECTION:
         if (e.target === stage) {
-          stage.find('Transformer')[0].destroy()
+          //console.log(stage.find('Transformer'))
           parentLayer.draw()
           console.log(e)
           return
@@ -124,26 +124,29 @@ export function createCanvas() {
     }
   })
 
-  stage.on('click tap', function(e: KonvaEventObject<MouseEvent>) {
-    // if click on empty area - remove all transformers
-    if (e.target === stage) {
-      stage.find('Transformer').each(el => el.destroy())
+  //   stage.on('click tap', function(e: KonvaEventObject<MouseEvent>) {
+  //     // if click on empty area - remove all transformers
+  //     if (e.target === stage) {
+  //       let col = stage.find('Transformer') //.each(el => el.destroy())
+  //       if (col != undefined) {
+  //         col.each(item => item.destroy())
+  //       }
 
-      parentLayer.draw()
-      return
-    }
-    // do nothing if clicked NOT on our rectangles
-    if (!e.target.hasName('rect')) {
-      return
-    }
-    // remove old transformers
-    // TODO: we can skip it if current rect is already selected
-    //stage.find('Transformer').destroy()
+  //       parentLayer.draw()
+  //       return
+  //     }
+  //     // do nothing if clicked NOT on our rectangles
+  //     if (!e.target.hasName('rect')) {
+  //       return
+  //     }
+  //     // remove old transformers
+  //     // TODO: we can skip it if current rect is already selected
+  //     //stage.find('Transformer').destroy()
 
-    // create new transformer
-    var tr = new Konva.Transformer()
-    parentLayer.add(tr)
-    tr.attachTo(e.target)
-    parentLayer.draw()
-  })
+  //     // create new transformer
+  //     var tr = new Konva.Transformer()
+  //     parentLayer.add(tr)
+  //     tr.attachTo(e.target)
+  //     parentLayer.draw()
+  //   })
 }
