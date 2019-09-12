@@ -15,14 +15,24 @@
         <br />Circle
       </button>
       <button @click="enableSelection">
-        <i class="material-icons md-dark md-48">open_with</i>
+        <i class="material-icons md-dark md-48">tab_unselected</i>
         <br />Select
+      </button>
+      <button @click="enableTransform">
+        <i class="material-icons md-dark md-48">crop_free</i>
+        <br />Transform
       </button>
       <button id="DrawChoices" @click="drawChoices">
         <i class="material-icons md-dark md-48">more_horiz</i>
         <br />Draw
         <br />Choices
       </button>
+      <span>No of Questions</span>
+      <input id="noOfQuestions" v-model="uiState.noOfQuestions" type="number" min="1" max="100" />
+      <span>No of Options</span>
+      <input id="noOfOptions" v-model="uiState.noOfOptions" type="number" min="2" max="6" />
+      <span>No of Columns</span>
+      <input id="noOfColumns" v-model="uiState.noOfColumns" type="number" min="1" max="5" />
       <span>No of Canvas Objects</span>
       <span id="CanvasObjectsNumbers"></span>
       <span>Mouse:</span>
@@ -30,21 +40,26 @@
     </div>
     <!--{{$data}} {{poka}} !-->
     {{canvasState}}
+    {{uiState}}
   </div>
 </template>
 
 <script>
 import { createCanvas } from './stage'
 import { clearCanvas, drawChoices } from './toolbar'
-import { canvasState, CanvasModes } from './utilities'
+import { canvasState, CanvasModes, uiState } from './utilities'
 
 export default {
   name: 'Home',
 
   data() {
-    return { canvasState }
+    return { canvasState, uiState }
   },
+  created() {},
 
+  mounted() {
+    createCanvas()
+  },
   methods: {
     clearCanvas() {
       clearCanvas()
@@ -60,22 +75,20 @@ export default {
       canvasState.setMode(CanvasModes.SELECTION)
     },
 
+    enableTransform() {
+      canvasState.setMode(CanvasModes.TRANSFORM)
+    },
+
     drawChoices() {
       canvasState.setMode(CanvasModes.DRAW_CHOICES)
       drawChoices()
     },
-  },
-
-  created() {},
-
-  mounted() {
-    createCanvas()
   },
 }
 </script>
 
 <style>
 canvas {
-  border: 1px solid red;
+  border: 1px solid red !important;
 }
 </style>

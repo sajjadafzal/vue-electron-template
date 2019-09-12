@@ -50,7 +50,7 @@ function getConfig(config: ChoiceBoxConfig) {
 export class ChoiceBox {
   private rect: Konva.Rect
   private ktext: Konva.Text
-  private group = new Konva.Group()
+  private group: Konva.Group
 
   get x(): number {
     return this.rect.getAttr('x')
@@ -95,6 +95,7 @@ export class ChoiceBox {
       padding: thisConfig.padding,
       margin: thisConfig.margin,
       cornerRadius: thisConfig.cornerRadius,
+      name: 'ChoiceBoxRect',
     })
 
     this.ktext = new Konva.Text({
@@ -111,7 +112,11 @@ export class ChoiceBox {
       verticalAlign: thisConfig.verticalAlign,
       fill: thisConfig.fill,
       opacity: thisConfig.opacity,
+      name: 'ChoiceBoxText',
     })
+
+    this.group = new Konva.Group({ name: 'ChoiceBoxGroup' })
+
     //this.group.setAttr('draggable', true)
     this.group.add(this.rect)
     this.group.add(this.ktext)

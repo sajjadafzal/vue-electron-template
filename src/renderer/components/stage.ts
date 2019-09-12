@@ -21,13 +21,14 @@ var obj = {
   strokeWidth: canvasState.shapesStrokeWidth,
   dash: [5, 5],
   dashEnabled: true,
+  name: 'ReferenceRect',
 }
 
 export function createCanvas() {
   stage = new Konva.Stage({
     container: 'divCanvas',
-    width: 640,
-    height: 480,
+    width: 496,
+    height: 701,
   })
   //canvas.getContainer().style.border = '1px solid black'
   stage.add(parentLayer)
@@ -39,6 +40,7 @@ export function createCanvas() {
 
   stage.on('mousedown', function(e: KonvaEventObject<MouseEvent>) {
     switch (canvasState.getMode()) {
+      case CanvasModes.SELECTION:
       case CanvasModes.DRAW_RECTANGLE:
         obj.x = startPos.x = e.evt.clientX
         obj.y = startPos.y = e.evt.clientY
@@ -46,13 +48,17 @@ export function createCanvas() {
         inProgressRect = new Konva.Rect(obj)
         parentLayer.add(inProgressRect)
         break
-      case CanvasModes.SELECTION:
+
       default:
         return
     }
   })
 
   stage.on('mouseup', function(e: KonvaEventObject<MouseEvent>) {
+    //console.log('mouse_up')
+    let width: number
+    let height: number
+
     switch (canvasState.getMode()) {
       case CanvasModes.DRAW_RECTANGLE:
         if (!inProgressRect)
@@ -65,8 +71,8 @@ export function createCanvas() {
         inProgressRect = undefined
         parentLayer.draw()
 
-        let width = endPos.x - startPos.x
-        let height = endPos.y - startPos.y
+        width = endPos.x - startPos.x
+        height = endPos.y - startPos.y
 
         if (width < 10 || height < 10) return
 
@@ -85,12 +91,61 @@ export function createCanvas() {
 
         break
       case CanvasModes.SELECTION:
+        if (!inProgressRect) return
+
+        endPos.x = e.evt.clientX
+        endPos.y = e.evt.clientY
+
+        width = endPos.x - startPos.x
+        height = endPos.y - startPos.y
+
         if (e.target === stage) {
-          //console.log(stage.find('Transformer'))
+          //@ts-ignore
+          stage.find('Transformer').destroy() //Konva Collections types are not fully defined for TypeScript
           parentLayer.draw()
-          console.log(e)
-          return
+          console.log('Transformers destroyed')
+        } else {
+          if (e.target === inProgressRect) {
+            let tr = new Konva.Transformer()
+            let shapes = parentLayer.find((shp: Konva.Node) => {
+              if (
+                shp.getAttr('name') != 'ReferenceRect' &&
+                shp.getAttr('name') === 'ChoiceBoxGroup'
+              ) {
+                if (
+                  shp.getAttr('x') >= startPos.x &&
+                  shp.getAttr('y') >= startPos.y
+                ) {
+                  if (
+                    shp.getAttr('x') + shp.getAttr('width') <= endPos.x &&
+                    shp.getAttr('y') + shp.getAttr('height') <= endPos.y
+                  ) {
+                    console.log(shp)
+                    return shp
+                  }
+                }
+              }
+            })
+           //console.log(shapes)
+            let transformGroup = new Konva.Group()
+            shapes.each(s => {
+              //tr.attachTo(s.parent)
+              //s.parent.setAttr('draggable', true)
+
+              transformGroup.add(s as Konva.Shape)
+            })
+            transformGroup.setAttr('draggable', true)
+            //tr.setAttr('draggable', true)
+            tr.attachTo(transformGroup)
+            parentLayer.add(tr)
+            canvasState.setMode(CanvasModes.TRANSFORM)
+            parentLayer.draw()
+          }
         }
+
+        inProgressRect.remove()
+        inProgressRect = undefined
+        parentLayer.draw()
 
       default:
         return
@@ -108,6 +163,7 @@ export function createCanvas() {
 
   stage.on('mousemove', function(e: KonvaEventObject<MouseEvent>) {
     switch (canvasState.getMode()) {
+      case CanvasModes.SELECTION:
       case CanvasModes.DRAW_RECTANGLE:
         if (!inProgressRect) return
 
@@ -118,12 +174,14 @@ export function createCanvas() {
         inProgressRect.setAttr('height', endPos.y - startPos.y)
         parentLayer.draw()
         break
-      case CanvasModes.SELECTION:
       default:
         return
     }
   })
 
+  stage.on('dblclick', function(e: KonvaEventObject<MouseEvent>) {
+    //console.log('double click')
+  })
   //   stage.on('click tap', function(e: KonvaEventObject<MouseEvent>) {
   //     // if click on empty area - remove all transformers
   //     if (e.target === stage) {
