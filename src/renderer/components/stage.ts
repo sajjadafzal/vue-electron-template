@@ -112,22 +112,29 @@ export function createCanvas() {
                 shp.getAttr('name') != 'ReferenceRect' &&
                 shp.getAttr('name') === 'ChoiceBoxGroup'
               ) {
-                if (
-                  shp.getAttr('x') >= startPos.x &&
-                  shp.getAttr('y') >= startPos.y
-                ) {
-                  if (
-                    shp.getAttr('x') + shp.getAttr('width') <= endPos.x &&
-                    shp.getAttr('y') + shp.getAttr('height') <= endPos.y
-                  ) {
-                    console.log(shp)
+                shp.children.each((c: Konva.Node) => {
+                  if (c.getAttr('name') === 'ChoiceBoxRect') {
                     return shp
                   }
-                }
+                })
+                // if (
+                //   shp.getAttr('x') >= startPos.x &&
+                //   shp.getAttr('y') >= startPos.y
+                // ) {
+                //   if (
+                //     shp.getAttr('x') + shp.getAttr('width') <= endPos.x &&
+                //     shp.getAttr('y') + shp.getAttr('height') <= endPos.y
+                //   ) {
+                //     console.log(shp)
+                //     return shp
+                //   }
+                // }
               }
             })
-           //console.log(shapes)
+            //console.log(shapes)
             let transformGroup = new Konva.Group()
+            
+            console.log(shapes)
             shapes.each(s => {
               //tr.attachTo(s.parent)
               //s.parent.setAttr('draggable', true)
@@ -135,6 +142,7 @@ export function createCanvas() {
               transformGroup.add(s as Konva.Shape)
             })
             transformGroup.setAttr('draggable', true)
+            parentLayer.add(transformGroup)
             //tr.setAttr('draggable', true)
             tr.attachTo(transformGroup)
             parentLayer.add(tr)

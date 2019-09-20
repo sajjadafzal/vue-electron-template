@@ -27,6 +27,10 @@
         <br />Draw
         <br />Choices
       </button>
+      <button id="Test" @click="Test">
+        <i class="material-icons md-dark md-48">build</i>
+        <br />Test
+      </button>
       <span>No of Questions</span>
       <input id="noOfQuestions" v-model="uiState.noOfQuestions" type="number" min="1" max="100" />
       <span>No of Options</span>
@@ -45,15 +49,15 @@
 </template>
 
 <script>
-import { createCanvas } from './stage'
-import { clearCanvas, drawChoices } from './toolbar'
+import { createCanvas, parentLayer } from './stage'
+import { clearCanvas, drawChoices, TestingCode } from './toolbar'
 import { canvasState, CanvasModes, uiState } from './utilities'
 
 export default {
   name: 'Home',
 
   data() {
-    return { canvasState, uiState }
+     return { canvasState, uiState }
   },
   created() {},
 
@@ -82,6 +86,9 @@ export default {
     drawChoices() {
       canvasState.setMode(CanvasModes.DRAW_CHOICES)
       drawChoices()
+    },
+    Test() {
+      TestingCode()
     },
   },
 }

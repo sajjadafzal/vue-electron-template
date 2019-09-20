@@ -48,25 +48,25 @@ function getConfig(config: ChoiceBoxConfig) {
 }
 
 export class ChoiceBox {
-  private rect: Konva.Rect
+  private krect: Konva.Rect
   private ktext: Konva.Text
   private group: Konva.Group
 
   get x(): number {
-    return this.rect.getAttr('x')
+    return this.krect.getAttr('x')
   }
 
   set x(value: number) {
-    this.rect.setAttr('x', value)
+    this.krect.setAttr('x', value)
     parentLayer.draw()
   }
 
   get y(): number {
-    return this.rect.getAttr('y')
+    return this.krect.getAttr('y')
   }
 
   set y(value: number) {
-    this.rect.setAttr('y', value)
+    this.krect.setAttr('y', value)
     parentLayer.draw()
   }
 
@@ -75,9 +75,21 @@ export class ChoiceBox {
   }
 
   set text(value: string) {
-    this.rect.setAttr('text', value)
+    this.krect.setAttr('text', value)
     parentLayer.draw()
   }
+
+  get rectObj() {
+    return this.krect
+  }
+  get textObj() {
+    return this.ktext
+  }
+
+  get groupObj() {
+    return this.group
+  }
+
 
   constructor(config: ChoiceBoxConfig) {
     let thisConfig = {
@@ -85,7 +97,7 @@ export class ChoiceBox {
       ...config,
     }
 
-    this.rect = new Konva.Rect({
+    this.krect = new Konva.Rect({
       x: thisConfig.x,
       y: thisConfig.y,
       width: thisConfig.width,
@@ -115,10 +127,16 @@ export class ChoiceBox {
       name: 'ChoiceBoxText',
     })
 
-    this.group = new Konva.Group({ name: 'ChoiceBoxGroup' })
+    this.group = new Konva.Group({
+      name: 'ChoiceBoxGroup',
+      // x: thisConfig.x,
+      // y: thisConfig.y,
+      // width: thisConfig.width,
+      // height: thisConfig.height,
+    })
 
     //this.group.setAttr('draggable', true)
-    this.group.add(this.rect)
+    this.group.add(this.krect)
     this.group.add(this.ktext)
     parentLayer.add(this.group)
     //parentLayer.add(this.text)
@@ -126,7 +144,7 @@ export class ChoiceBox {
   }
 
   public update(config: ChoiceBoxConfig) {
-    this.rect.setAttrs(config)
+    this.krect.setAttrs(config)
     parentLayer.draw()
   }
 }
