@@ -90,6 +90,15 @@ export function createCanvas() {
         let ch = new ChoiceBox(conf)
 
         break
+      case CanvasModes.TRANSFORM:
+          if (e.target === stage) {
+            //@ts-ignore
+            stage.find('Transformer').destroy() //Konva Collections types are not fully defined for TypeScript
+            parentLayer.draw()
+            console.log('Transformers destroyed')
+          }
+          canvasState.setMode(CanvasModes.SELECTION)
+        break
       case CanvasModes.SELECTION:
         if (!inProgressRect) return
 
@@ -99,6 +108,7 @@ export function createCanvas() {
         width = endPos.x - startPos.x
         height = endPos.y - startPos.y
 
+        var transformGroup = new Konva.Group()
         if (e.target === stage) {
           //@ts-ignore
           stage.find('Transformer').destroy() //Konva Collections types are not fully defined for TypeScript
@@ -107,35 +117,30 @@ export function createCanvas() {
         } else {
           if (e.target === inProgressRect) {
             let tr = new Konva.Transformer()
-            let shapes = parentLayer.find((shp: Konva.Node) => {
-              if (
-                shp.getAttr('name') != 'ReferenceRect' &&
-                shp.getAttr('name') === 'ChoiceBoxGroup'
-              ) {
-                shp.children.each((c: Konva.Node) => {
-                  if (c.getAttr('name') === 'ChoiceBoxRect') {
-                    return shp
+            var shapes = parentLayer.find((shp: Konva.Node) => {
+              {      
+                  if (shp.getAttr('name') != 'ReferenceRect') {
+                    if (
+                      shp.getAttr('x') >= startPos.x &&
+                      shp.getAttr('y') >= startPos.y
+                    ) {
+                      if (
+                        shp.getAttr('x') + shp.getAttr('width') <= endPos.x &&
+                        shp.getAttr('y') + shp.getAttr('height') <= endPos.y
+                      ) {
+                        //console.log(shp)
+                        return shp
+                      }
+                    }
+                    //return shp
                   }
-                })
-                // if (
-                //   shp.getAttr('x') >= startPos.x &&
-                //   shp.getAttr('y') >= startPos.y
-                // ) {
-                //   if (
-                //     shp.getAttr('x') + shp.getAttr('width') <= endPos.x &&
-                //     shp.getAttr('y') + shp.getAttr('height') <= endPos.y
-                //   ) {
-                //     console.log(shp)
-                //     return shp
-                //   }
-                // }
               }
             })
             //console.log(shapes)
-            let transformGroup = new Konva.Group()
+            
             
             console.log(shapes)
-            shapes.each(s => {
+            shapes.each((s) => {
               //tr.attachTo(s.parent)
               //s.parent.setAttr('draggable', true)
 
@@ -146,8 +151,9 @@ export function createCanvas() {
             //tr.setAttr('draggable', true)
             tr.attachTo(transformGroup)
             parentLayer.add(tr)
-            canvasState.setMode(CanvasModes.TRANSFORM)
             parentLayer.draw()
+            canvasState.setMode(CanvasModes.TRANSFORM)
+            
           }
         }
 

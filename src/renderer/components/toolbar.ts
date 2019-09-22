@@ -27,8 +27,8 @@ export function drawChoices() {
 
 export function TestingCode() {
   let rect = new Konva.Rect({
-    x: 50,
-    y: 50,
+    x: 200,
+    y: 200,
     width: 20,
     height: 20,
     offsetX: 0,
@@ -56,10 +56,11 @@ export function TestingCode() {
 
   let grp = new Konva.Group()
   grp.setAttr('draggable', true)
-  grp.add(crect.groupObj)
+  grp.add(crect.KonvaGroup)
+  grp.add(rect)
   parentLayer.add(grp)
   let tr = new Konva.Transformer()
-
+  
   tr.attachTo(grp)
   //tr.attachTo(crect.textObj)
 
