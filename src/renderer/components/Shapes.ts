@@ -139,7 +139,7 @@ export class ChoiceBox {
     //this.group.setAttr('draggable', true)
     this.kGroup.add(this.kRect)
     this.kGroup.add(this.kText)
-    console.log(this.kGroup)
+    //console.log(this.kGroup)
     parentLayer.add(this.kGroup)
     //parentLayer.add(this.text)
     parentLayer.draw()

@@ -9,6 +9,8 @@ var stage: Konva.Stage
 var startPos = new Point()
 var endPos = new Point()
 var inProgressRect: Konva.Rect | undefined
+var tr: Konva.Transformer
+var StoredShape: Konva.Group
 
 export let parentLayer = new Konva.Layer()
 let workingLayer
@@ -88,16 +90,16 @@ export function createCanvas() {
         }
 
         let ch = new ChoiceBox(conf)
-
+        //StoredShape = ch.KonvaGroup
         break
       case CanvasModes.TRANSFORM:
-          if (e.target === stage) {
-            //@ts-ignore
-            stage.find('Transformer').destroy() //Konva Collections types are not fully defined for TypeScript
-            parentLayer.draw()
-            console.log('Transformers destroyed')
-          }
-          canvasState.setMode(CanvasModes.SELECTION)
+        let shapes = parentLayer.find('.IsSelected')
+        shapes.each(s => {
+          console.log(s.getAttr('scaleX') + ',' + s.getAttr('scaleY'))
+          //s.removeName('IsSelected')
+          //console.log(s)
+        })
+        //canvasState.setMode(CanvasModes.SELECTION)
         break
       case CanvasModes.SELECTION:
         if (!inProgressRect) return
@@ -108,52 +110,62 @@ export function createCanvas() {
         width = endPos.x - startPos.x
         height = endPos.y - startPos.y
 
-        var transformGroup = new Konva.Group()
+        var transformGroup = new Konva.Group({
+          name: 'transformGroup',
+        })
         if (e.target === stage) {
+          //@ts-ignore
+          var trs = stage.find('Transformer') //Konva Collections types are not fully defined for TypeScript
+          //@ts-ignore
+          trs.each(function(t) {
+            //@ts-ignore
+            t.forceUpdate()
+            console.log('Force Updated')
+          })
           //@ts-ignore
           stage.find('Transformer').destroy() //Konva Collections types are not fully defined for TypeScript
           parentLayer.draw()
-          console.log('Transformers destroyed')
+          //console.log('Transformers destroyed')
         } else {
           if (e.target === inProgressRect) {
-            let tr = new Konva.Transformer()
-            var shapes = parentLayer.find((shp: Konva.Node) => {
-              {      
-                  if (shp.getAttr('name') != 'ReferenceRect') {
+            let shapes = parentLayer.find((shp: Konva.Node) => {
+              {
+                if (shp.getAttr('name') != 'ReferenceRect') {
+                  if (
+                    shp.getAttr('x') >= startPos.x &&
+                    shp.getAttr('y') >= startPos.y
+                  ) {
                     if (
-                      shp.getAttr('x') >= startPos.x &&
-                      shp.getAttr('y') >= startPos.y
+                      shp.getAttr('x') + shp.getAttr('width') <= endPos.x &&
+                      shp.getAttr('y') + shp.getAttr('height') <= endPos.y
                     ) {
-                      if (
-                        shp.getAttr('x') + shp.getAttr('width') <= endPos.x &&
-                        shp.getAttr('y') + shp.getAttr('height') <= endPos.y
-                      ) {
-                        //console.log(shp)
-                        return shp
-                      }
+                      //console.log(shp)
+                      return shp
                     }
-                    //return shp
                   }
+                  //return shp
+                }
               }
             })
             //console.log(shapes)
-            
-            
-            console.log(shapes)
-            shapes.each((s) => {
+
+            //console.log(shapes)
+            shapes.each(s => {
               //tr.attachTo(s.parent)
               //s.parent.setAttr('draggable', true)
-
+              s.addName('IsSelected')
+              //if (!StoredShape) StoredShape = s as Konva.Shape
               transformGroup.add(s as Konva.Shape)
             })
+            StoredShape = transformGroup
             transformGroup.setAttr('draggable', true)
             parentLayer.add(transformGroup)
             //tr.setAttr('draggable', true)
+            tr = new Konva.Transformer()
             tr.attachTo(transformGroup)
             parentLayer.add(tr)
             parentLayer.draw()
             canvasState.setMode(CanvasModes.TRANSFORM)
-            
           }
         }
 
@@ -173,6 +185,7 @@ export function createCanvas() {
       inProgressRect = undefined
       parentLayer.draw()
     }
+    canvasState.setMode(CanvasModes.SELECTION)
   })
 
   stage.on('mousemove', function(e: KonvaEventObject<MouseEvent>) {
@@ -188,6 +201,9 @@ export function createCanvas() {
         inProgressRect.setAttr('height', endPos.y - startPos.y)
         parentLayer.draw()
         break
+      case CanvasModes.TRANSFORM:
+        if (!tr) return
+      //console.log(tr)
       default:
         return
     }
@@ -195,6 +211,20 @@ export function createCanvas() {
 
   stage.on('dblclick', function(e: KonvaEventObject<MouseEvent>) {
     //console.log('double click')
+    if (e.target === stage) {
+      //@ts-ignore
+      var trs = stage.find('Transformer')
+      trs.each(tr => {
+        //@ts-ignore
+        if (tr.className == 'Transformer') {
+          //@ts-ignore
+          tr.detach()
+          tr.destroy()
+        }
+      })
+      parentLayer.draw()
+      //console.log('Transformers destroyed')
+    }
   })
   //   stage.on('click tap', function(e: KonvaEventObject<MouseEvent>) {
   //     // if click on empty area - remove all transformers

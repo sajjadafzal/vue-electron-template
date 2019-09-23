@@ -39,6 +39,16 @@ export function TestingCode() {
   })
   parentLayer.add(rect)
   parentLayer.draw()
+  console.log(rect)
+  rect.addName('Hello')
+  
+  rect.addName('How')
+  
+  rect.addName('Are')
+ 
+  rect.removeName('How')
+  
+  
   let conf = {
     x: 50,
     y: 50,
