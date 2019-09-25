@@ -4,6 +4,7 @@ import { KonvaEventObject, NodeConfig } from 'konva/types/Node'
 
 import { start } from 'repl'
 import { ChoiceBox } from './Shapes'
+import { Group } from 'konva/types/Group'
 
 var stage: Konva.Stage
 var startPos = new Point()
@@ -127,34 +128,70 @@ export function createCanvas() {
           //console.log('Transformers destroyed')
         } else {
           if (e.target === inProgressRect) {
-            let shapes = parentLayer.find((shp: Konva.Node) => {
-              {
-                if (
-                  shp.getAttr('name') != 'ReferenceRect' &&
-                  shp.className == 'Rect'
-                ) {
-                  if (
-                    shp.getAttr('x') >= startPos.x &&
-                    shp.getAttr('y') >= startPos.y
-                  ) {
-                    if (
-                      shp.getAttr('x') + shp.getAttr('width') <= endPos.x &&
-                      shp.getAttr('y') + shp.getAttr('height') <= endPos.y
-                    ) {
-                      //console.log(shp)
-                      //@ts-ignore
-                      //if (shp.parent.nodeType == 'Layer')
-                        return FindTopLevelNode(shp) as Konva.Node
-                    }
-                  }
-
-                  //return shp
-                }
-              }
-            })
-
             var transformGroup = new Konva.Group({
               name: 'transformGroup',
+            })
+
+            // let shapes = parentLayer.find((shp: Konva.Node) => {
+            //   {
+            //     if (
+            //       shp.getAttr('name') != 'ReferenceRect' &&
+            //       shp.className == 'Rect'
+            //     ) {
+            //       if (
+            //         shp.getAttr('x') >= startPos.x &&
+            //         shp.getAttr('y') >= startPos.y
+            //       ) {
+            //         if (
+            //           shp.getAttr('x') + shp.getAttr('width') <= endPos.x &&
+            //           shp.getAttr('y') + shp.getAttr('height') <= endPos.y
+            //         ) {
+            //           //console.log(shp)
+            //           //@ts-ignore
+            //           //if (shp.parent.nodeType == 'Layer')
+            //           let nd = FindTopLevelNode(shp)
+            //           if (nd) {
+            //             if (nd.nodeType == 'Group')
+            //               transformGroup.add(nd as Konva.Group)
+            //             if (nd.nodeType == 'Shape')
+            //               transformGroup.add(nd as Konva.Shape)
+            //           }
+            //         }
+            //       }
+
+            //       //return shp
+            //     }
+            //   }
+            // })
+
+            parentLayer.children.each(shp => {
+              if (
+                shp.getAttr('name') != 'ReferenceRect' &&
+                shp.className == 'Rect'
+              ) {
+                if (
+                  shp.getAttr('x') >= startPos.x &&
+                  shp.getAttr('y') >= startPos.y
+                ) {
+                  if (
+                    shp.getAttr('x') + shp.getAttr('width') <= endPos.x &&
+                    shp.getAttr('y') + shp.getAttr('height') <= endPos.y
+                  ) {
+                    //console.log(shp)
+                    //@ts-ignore
+                    //if (shp.parent.nodeType == 'Layer')
+                    let nd = FindTopLevelNode(shp)
+                    if (nd) {
+                      if (nd.nodeType == 'Group')
+                        transformGroup.add(nd as Konva.Group)
+                      if (nd.nodeType == 'Shape')
+                        transformGroup.add(nd as Konva.Shape)
+                    }
+                  }
+                }
+
+                //return shp
+              }
             })
 
             // parentLayer.children.each(shp => {
@@ -181,14 +218,14 @@ export function createCanvas() {
             //console.log(shapes)
 
             //console.log(shapes)
-            shapes.each(s => {
-              //tr.attachTo(s.parent)
-              //s.parent.setAttr('draggable', true)
-              s.addName('IsSelected')
-              //if (!StoredShape) StoredShape = s as Konva.Shape
-              //@ts-ignore
-              transformGroup.add(s)
-            })
+            //shapes.each(s => {
+            //tr.attachTo(s.parent)
+            //s.parent.setAttr('draggable', true)
+            //s.addName('IsSelected')
+            //if (!StoredShape) StoredShape = s as Konva.Shape
+            //@ts-ignore
+            //transformGroup.add(s)
+            //})
             StoredShape = transformGroup
             transformGroup.setAttr('draggable', true)
             parentLayer.add(transformGroup)
@@ -210,6 +247,41 @@ export function createCanvas() {
         return
     }
   })
+
+  function HitTest(
+    node: Konva.Node,
+    hitX1: number,
+    hitY1: number,
+    hitX2: number,
+    hitY2: number,
+    checkHitChildren: boolean
+  ): boolean {
+    let isHit = false
+    if (node.nodeType == 'Group' && checkHitChildren) {
+      node.children.each(ch => { 
+        if (!isHit) {
+          isHit = HitTest(ch,hitX1,hitY1,hitX2,hitY2,true)
+        }
+      })
+    }
+    if (node.getAttr('name') != 'ReferenceRect' && node.className == 'Rect') {
+      if (node.getAttr('x') >= hitX1 && node.getAttr('y') >= hitY1) {
+        if (
+          node.getAttr('x') + node.getAttr('width') <= hitX2 &&
+          node.getAttr('y') + node.getAttr('height') <= hitY2
+        ) {
+          //console.log(shp)
+          //@ts-ignore
+          //if (shp.parent.nodeType == 'Layer')
+          isHit = true
+          
+        }
+      }
+
+      //return shp
+    }
+    return isHit
+  }
 
   function FindTopLevelNode(node: Konva.Node): Konva.Node | undefined {
     if (node.parent && node.parent.nodeType == 'Layer') return node
