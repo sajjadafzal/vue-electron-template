@@ -13,7 +13,7 @@ var inProgressRect: Konva.Rect | undefined
 var tr: Konva.Transformer
 var StoredShape: Konva.Group
 var transformGroup = new Konva.Group({name: 'transformGroup'})
-
+var ZeroTransform = transformGroup.getAbsoluteTransform().getMatrix()
 export let parentLayer = new Konva.Layer()
 
 var obj = {
@@ -136,6 +136,7 @@ export function createCanvas() {
               }
             })
             StoredShape = transformGroup.clone()
+            console.log(transformGroup.getAbsoluteTransform().getMatrix())
             transformGroup.setAttr('draggable', true)
             //parentLayer.add(transformGroup) - uncomment if transformGroup is a local variable
             //tr.setAttr('draggable', true)
@@ -246,9 +247,21 @@ export function createCanvas() {
           tr.destroy()
         }
       })
-      console.log(transformGroup)
-      if (transformGroup.hasChildren()) transformGroup.children.each(c=>{c.moveTo(parentLayer)})
+      //@ts-ignore
+      let ThisRotation = transformGroup.getRotation()
+      let ThisTransform = transformGroup.getAbsoluteTransform()
+      const trMat = ThisTransform.getMatrix()
+
+      if (transformGroup.hasChildren()) transformGroup.children.each(c => {
+        const matrix = c.getAbsoluteTransform().getMatrix()
+        const attrs = decompose(matrix)
+        c.moveTo(parentLayer)
+        c.setAttrs(attrs)
+        //c.rotate(ThisRotation)
+      })
+      //transformGroup.getTransform().multiply(ThisTransform.invert())
       //ResetTransformation(transformGroup)
+      transformGroup.setAttrs(decompose(ZeroTransform))
       parentLayer.draw()
       //console.log('Transformers destroyed')
     }
@@ -278,4 +291,50 @@ export function createCanvas() {
   //     tr.attachTo(e.target)
   //     parentLayer.draw()
   //   })
+
+  function decompose(mat) {
+    var mScaleX = mat[0]
+    var mSkewY = mat[1]
+    var mSkewX = mat[2]
+    var mScaleY = mat[3]
+    var mTransX = mat[4]
+    var mTransY = mat[5]
+
+    var delta = mScaleX * mScaleY - mSkewY * mSkewX
+
+    let result = {
+      x: mTransX,
+      y: mTransY,
+      rotation: 0,
+      scaleX: 0,
+      scaleY: 0,
+      skewX: 0,
+      skewY: 0,
+    }
+
+    // Apply the QR-like decomposition.
+    if (mScaleX != 0 || mSkewY != 0) {
+      var r = Math.sqrt(mScaleX * mScaleX + mSkewY * mSkewY)
+      result.rotation =
+        mSkewY > 0 ? Math.acos(mScaleX / r) : -Math.acos(mScaleX / r)
+      result.scaleX = r
+      result.scaleY = delta / r
+      result.skewX = Math.atan((mScaleX * mSkewX + mSkewY * mScaleY) / (r * r))
+      //result.scleY = 0
+    } else if (mSkewX != 0 || mScaleY != 0) {
+      var s = Math.sqrt(mSkewX * mSkewX + mScaleY * mScaleY)
+      result.rotation =
+        Math.PI / 2 -
+        (mScaleY > 0 ? Math.acos(-mSkewX / s) : -Math.acos(mSkewX / s))
+      result.scaleX = delta / s
+      result.scaleY = s
+      result.skewX = 0
+      result.skewY = Math.atan((mScaleX * mSkewX + mSkewY * mScaleY) / (s * s))
+    } else {
+      // a = b = c = d = 0
+    }
+
+    result.rotation *= 180 / Math.PI
+    return result
+  }
 }
